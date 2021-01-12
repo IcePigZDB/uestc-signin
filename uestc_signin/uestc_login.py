@@ -17,6 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
+import requests
 from .baidu import baidu_ocr
 from .captcha import CalcMoveOffset
 
@@ -73,6 +74,9 @@ class Login(object):
             self.driver.quit()
 
     def login(self) -> bool:
+        if self.check_cookies_valid():
+            return True
+
         if self.driver == None:
             self.init_driver()
 
@@ -174,6 +178,15 @@ class Login(object):
             with open("./data/cookies.json", "r") as f:
                 return json.load(f)
 
+    def check_cookies_valid(self):
+        cookies = Login.load_cookies()
+        if len(cookies) > 0:
+            test_req = requests.get(
+                "https://mapp.uestc.edu.cn/site/uestcService/index?ticket=ST-150915-1u1eImAqIyPsxrugzxlf1590930369193-vuau-cas", cookies=cookies)
+            # not redirect to CAS login
+            if len(test_req.history) == 0:
+                return True
+        return False
 
 def ReLogin(config):
     if config.user is None or config.password is None:
@@ -181,7 +194,7 @@ def ReLogin(config):
         return False
 
     login = Login(config.user, config.password)
-
+    # check if cookies is valid
     try:
         login_status = login.login()
         return login_status
