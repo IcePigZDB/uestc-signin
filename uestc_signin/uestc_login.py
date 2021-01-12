@@ -69,8 +69,8 @@ class Login(object):
             self.driver.implicitly_wait(self.timeout)
 
     def release_driver(self):
-        self.driver.quit()
-        self.driver = None
+        if self.driver != None:
+            self.driver.quit()
 
     def login(self) -> bool:
         if self.driver == None:
@@ -123,7 +123,6 @@ class Login(object):
                 f.write(template_png)
 
             offset = CalcMoveOffset('./captcha.png', 'template.png', width)
-            print(width, offset)
             source = driver.find_element_by_class_name('slider')
             actions = ActionChains(
                 driver).drag_and_drop_by_offset(source, offset, 0)
@@ -180,9 +179,13 @@ def ReLogin(config):
     if config.user is None or config.password is None:
         print("you need to set username and passwd")
         return False
+
     login = Login(config.user, config.password)
-    if not login.login():
-        print("login failed, please check your config!")
+
+    try:
+        login_status = login.login()
+        return login_status
+    except Exception as e:
+        logger.error(f"Login failed {e}")
+        login.release_driver()
         return False
-    print("Login success!")
-    return True
