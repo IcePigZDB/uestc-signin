@@ -102,14 +102,14 @@ class Login(object):
         # mabye fail we can try many times
         for _ in range(20):
             captcha_img_ele = driver.find_element_by_xpath(
-                '/html/body/div/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/canvas[1]')
+                '/html/body/div[1]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/canvas[1]')
             captcha_base64 = driver.execute_script(
                 "return arguments[0].toDataURL('image/png').substring(21);", captcha_img_ele)
             width = driver.execute_script(
                 "return arguments[0].width", captcha_img_ele)
 
             template_img_ele = driver.find_element_by_xpath(
-                '/html/body/div/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/canvas[2]')
+                '/html/body/div[1]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/canvas[2]')
             template_base64 = driver.execute_script(
                 "return arguments[0].toDataURL('image/png').substring(21);", template_img_ele)
 
