@@ -279,10 +279,11 @@ def DateCompare(date_1, date_2):
 def MainTask(user_config, mail_config):
     last_check_day = "1970-01-01"
     subject = "UESTC-Notify"
+    today_fail_count = 0
     while True:
         current_date = datetime.datetime.now()
         current_date_str = current_date.strftime("%Y-%m-%d")
-        # if current_date not run task and hour is greater 8am
+        # if today not run task and hour is greater 8am and try count < 10
         if DateCompare(last_check_day, current_date_str) and current_date.hour > 8:
             try:
                 if ReLogin(user_config):
@@ -295,15 +296,31 @@ def MainTask(user_config, mail_config):
                     last_check_day = current_date_str
                     msg = f"Today's task has completed {user_config.user}"
                     logger.info(msg)
+                    today_fail_count = 0
                     if mail_config.enable == 'true':
                         threading.Thread(
                             target=Notify, args=(mail_config, subject, msg,)).start()
                 else:
                     time.sleep(30)
-                    logger.error("Login error, password or username wrong.")
-            except:
-                logger.error("Task error,maybe the internet can not access")
+                    today_fail_count += 1
+                    logger.error(f"Login error, password or username wrong.")
+            except Exception as e:
+                today_fail_count += 1
+                logger.error(
+                    f"Task error,maybe the internet can not access {e}")
                 time.sleep(10)
+
+        # if we try many times, force exit and notify user for fixing
+        elif not (today_fail_count < 10):
+            logger.error(f"Try many times, force exit")
+            if mail_config.enable == 'true':
+                threading.Thread(
+                    target=Notify, args=(mail_config, subject, "Safe-Report task failed, please your config :-(",)).start()
+            # exit
+            break
+        
+        # We need this?
         else:
             logger.info("Not need to run task,wating for task")
+            # waiting for 20 minutes
             time.sleep(20*60)
