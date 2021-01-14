@@ -180,12 +180,23 @@ class Login(object):
 
     def check_cookies_valid(self):
         cookies = Login.load_cookies()
-        if len(cookies) > 0:
-            test_req = requests.get(
-                "https://mapp.uestc.edu.cn/site/uestcService/index?ticket=ST-150915-1u1eImAqIyPsxrugzxlf1590930369193-vuau-cas", cookies=cookies)
-            # not redirect to CAS login
-            if len(test_req.history) == 0:
-                return True
+        lastest_daily_report_url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getLatestDailyReportData.do"
+        post_data = {
+            "pageNum": 1,
+            "pageSize": 10,
+            "USER_ID": self.user
+        }
+        headers = {
+            'Origin': 'http://eportal.uestc.edu.cn',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0',
+        }
+        last_daily_data = requests.post(
+            lastest_daily_report_url, data=post_data, headers=headers, cookies=cookies).content
+        try:
+            _ = json.loads(last_daily_data)
+            return True
+        except Exception as e:
+            logger.debug(f"Cookies is unvalid {e}")
         return False
 
 def ReLogin(config):
