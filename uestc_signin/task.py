@@ -51,7 +51,7 @@ class Task(object):
         pass
 
     def _get_server_date(self):
-        url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/api/base/getServerDate.do"
+        url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/api/base/getServerDate.do"
         res = requests.post(url, cookies=self.cookies)
         if res.status_code == requests.codes.ok:
             return res.text
@@ -63,7 +63,7 @@ class TemperatureTask(Task):
     def __init__(self, config):
         """TemperatureTask"""
         super(TemperatureTask, self).__init__(config)
-        self.url = 'http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/tempReport/T_REPORT_TEMPERATURE_YJS_SAVE.do'
+        self.url = 'https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/tempReport/T_REPORT_TEMPERATURE_YJS_SAVE.do'
         self.method = self.RequestMethod.POST
         self.last_run = []
         self.init_data()
@@ -73,7 +73,7 @@ class TemperatureTask(Task):
         """ init cookies and user data """
         self.cookies = Login.load_cookies()
         logger.info(self.cookies)
-        user_info_url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/api/base/getUserDetailDB.do"
+        user_info_url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/api/base/getUserDetailDB.do"
         res = requests.post(user_info_url, cookies=self.cookies).content.decode(
             encoding="utf-8")
         user_info = json.loads(res)
@@ -82,7 +82,7 @@ class TemperatureTask(Task):
             json.dump(user_info["data"], f)
 
         self.headers = {
-            'Origin': 'http://eportal.uestc.edu.cn',
+            'Origin': 'https://eportal.uestc.edu.cn',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0',
         }
 
@@ -95,7 +95,7 @@ class TemperatureTask(Task):
             "KSRQ": server_date,
             "JSRQ": server_date,
         }
-        url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/tempReport/getMyTempReportDatas.do"
+        url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/tempReport/getMyTempReportDatas.do"
         res = requests.post(url, data=post_data, cookies=self.cookies)
         data = json.loads(res.content)
         TempData = data["datas"]["getMyTempReportDatas"]
@@ -153,7 +153,7 @@ class TemperatureTask(Task):
 class StuReportTask(Task):
     def __init__(self, config):
         super(StuReportTask, self).__init__(config)
-        self.url = 'http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/T_REPORT_EPIDEMIC_CHECKIN_YJS_SAVE.do'
+        self.url = 'https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/T_REPORT_EPIDEMIC_CHECKIN_YJS_SAVE.do'
         self.method = self.RequestMethod.POST
         self.last_run = 0
         self.data_path = 'data/report.json'
@@ -162,14 +162,14 @@ class StuReportTask(Task):
 
     def init_data(self):
         self.cookies = Login.load_cookies()
-        lastest_daily_report_url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getLatestDailyReportData.do"
+        lastest_daily_report_url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getLatestDailyReportData.do"
         post_data = {
             "pageNum": 1,
             "pageSize": 10,
             "USER_ID": self.config.user
         }
         headers = {
-            'Origin': 'http://eportal.uestc.edu.cn',
+            'Origin': 'https://eportal.uestc.edu.cn',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0',
         }
         last_daily_data = requests.post(
@@ -190,7 +190,7 @@ class StuReportTask(Task):
             "KSRQ": server_date,
             "JSRQ": server_date,
         }
-        url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getMyDailyReportDatas.do"
+        url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getMyDailyReportDatas.do"
         res = requests.post(url, data=post_data, cookies=self.cookies)
         data = json.loads(res.content)
         if(data["datas"]["getMyDailyReportDatas"]["totalSize"] > 0):
@@ -212,7 +212,7 @@ class StuReportTask(Task):
 
     def _get_today_wid(self):
         self.cookies = Login.load_cookies()
-        url = "http://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getMyTodayReportWid.do"
+        url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getMyTodayReportWid.do"
         post_data = {
             "pageNum": "1",
             "pageSize": "10",
@@ -231,7 +231,7 @@ class StuReportTask(Task):
         post_url = self.url
         data = self._get_post_data()
         headers = {
-            'Origin': 'http://eportal.uestc.edu.cn',
+            'Origin': 'https://eportal.uestc.edu.cn',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0',
 
         }
@@ -311,14 +311,13 @@ def MainTask(user_config, mail_config):
                 time.sleep(10)
 
         # if we try many times, force exit and notify user for fixing
-        elif not (today_fail_count < 10):
+        if today_fail_count > 10:
             logger.error(f"Try many times, force exit")
             if mail_config.enable == 'true':
                 threading.Thread(
-                    target=Notify, args=(mail_config, subject, "Safe-Report task failed, please your config :-(",)).start()
+                    target=Notify, args=(mail_config, subject, "Safe-Report task failed, please renew your config :-(",)).start()
             # exit
             break
-        
         # We need this?
         else:
             logger.info("Not need to run task,wating for task")
