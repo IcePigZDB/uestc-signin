@@ -45,7 +45,7 @@ class loaded_weu_cookie(object):
             current_cookies = {}
             for elem in driver.get_cookies():
                 current_cookies[elem['name']] = elem['value']
-            return "_WEU" in current_cookies and len(current_cookies["_WEU"]) >= 152
+            return "_WEU" in current_cookies and len(current_cookies["_WEU"]) >= 140
         return False
 
 
@@ -198,6 +198,7 @@ class Login(object):
         except Exception as e:
             logger.debug(f"Cookies is unvalid {e}")
         return False
+
 
 def ReLogin(config):
     if config.user is None or config.password is None:
