@@ -72,7 +72,7 @@ class Login(object):
     def release_driver(self):
         if self.driver != None:
             self.driver.quit()
-
+    # -> type hine new feature 
     def login(self) -> bool:
         if self.check_cookies_valid():
             return True
@@ -82,7 +82,7 @@ class Login(object):
 
         driver = self.driver
         driver.implicitly_wait(10)
-
+        # login
         driver.get(
             "https://mapp.uestc.edu.cn/site/uestcService/index?ticket=ST-150915-1u1eImAqIyPsxrugzxlf1590930369193-vuau-cas")
         # saving the login page
@@ -136,10 +136,11 @@ class Login(object):
             # vertify if login success
             if "authserver" not in driver.current_url:
                 break
+        # for else ,dive into else if no break
         # not need captcha anymore
         else:
             self.release_driver()
-            logger.error("log in failed,maybe username of password is wrong")
+            logger.error("login failed,maybe username of password is wrong")
             return False
 
         # enter app for getting login cookies
@@ -159,7 +160,8 @@ class Login(object):
             self.release_driver()
         # everythin is ok, login is ok
         return True
-
+    # classmethod 修饰符对应的函数不需要实例化，不需要 self 参数，
+    # 但第一个参数需要是表示自身类的 cls 参数，可以来调用类的属性，类的方法，实例化对象等
     @classmethod
     def save_cookies(cls, driver_cookies):
         cookies = {}

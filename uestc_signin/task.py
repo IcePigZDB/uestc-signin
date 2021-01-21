@@ -159,7 +159,7 @@ class StuReportTask(Task):
         self.data_path = 'data/report.json'
         self.cookies = {}
         self.init_data()
-
+        
     def init_data(self):
         self.cookies = Login.load_cookies()
         lastest_daily_report_url = "https://eportal.uestc.edu.cn/jkdkapp/sys/lwReportEpidemicStu/mobile/dailyReport/getLatestDailyReportData.do"
@@ -301,14 +301,14 @@ def MainTask(user_config, mail_config):
                         threading.Thread(
                             target=Notify, args=(mail_config, subject, msg,)).start()
                 else:
-                    time.sleep(30)
+                    # time.sleep(30)
                     today_fail_count += 1
                     logger.error(f"Login error, password or username wrong.")
             except Exception as e:
                 today_fail_count += 1
                 logger.error(
                     f"Task error,maybe the internet can not access {e}")
-                time.sleep(10)
+                # time.sleep(10)
 
         # if we try many times, force exit and notify user for fixing
         if today_fail_count > 10:
@@ -321,5 +321,7 @@ def MainTask(user_config, mail_config):
         # We need this?
         else:
             logger.info("Not need to run task,wating for task")
+            # break while to quit task.
+            break
             # waiting for 20 minutes
-            time.sleep(20*60)
+            # time.sleep(20*60)
