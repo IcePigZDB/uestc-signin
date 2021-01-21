@@ -321,5 +321,7 @@ def MainTask(user_config, mail_config):
         # We need this?
         else:
             logger.info("Not need to run task,wating for task")
+            # break onec task finish
+            break
             # waiting for 20 minutes
             time.sleep(20*60)
